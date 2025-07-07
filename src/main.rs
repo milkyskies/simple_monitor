@@ -1,6 +1,6 @@
 use axum::{extract::State, http::StatusCode, response::Json, routing::get, Router};
 use dotenv::dotenv;
-use nvml_wrapper::{error::NvmlError, Device, Nvml};
+use nvml_wrapper::{Device, Nvml};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 use sysinfo::System;
