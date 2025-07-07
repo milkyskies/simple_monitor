@@ -6,6 +6,9 @@ on:
       - "v*" # Triggers on version tags like v1.0.0
   workflow_dispatch: # Allows manual trigger
 
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build for ${{ matrix.os }}
@@ -115,13 +118,9 @@ jobs:
         run: ls -la artifacts/**
 
       - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          files: artifacts/**/*
           body: |
             ## Simple System Monitor ${{ github.ref_name }}
 
@@ -160,17 +159,3 @@ jobs:
             - **macOS**: x86_64 and ARM64 (Apple Silicon)
           draft: false
           prerelease: false
-
-      - name: Upload Release Assets
-        run: |
-          for file in artifacts/**/*; do
-            if [[ -f "$file" ]]; then
-              filename=$(basename "$file")
-              echo "Uploading $filename..."
-              curl -X POST \
-                -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                -H "Content-Type: application/octet-stream" \
-                --data-binary @"$file" \
-                "${{ steps.create_release.outputs.upload_url }}?name=$filename"
-            fi
-          done
