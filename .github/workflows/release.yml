@@ -74,9 +74,6 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           Copy-Item "target/${{ matrix.target }}/release/${{ matrix.binary_name }}" "${{ matrix.asset_name }}"
-          Copy-Item "env.example" "env.example"
-          Copy-Item "start-windows.bat" "start-windows.bat"
-          Copy-Item "configure-windows.bat" "configure-windows.bat"
           Compress-Archive -Path "${{ matrix.asset_name }}", "env.example", "start-windows.bat", "configure-windows.bat" -DestinationPath "${{ matrix.asset_name }}.zip"
 
       - name: Create archive (Linux and macOS)
